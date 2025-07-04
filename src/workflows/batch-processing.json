@@ -1,0 +1,94 @@
+{
+  "name": "Google Slides - Batch Slide Creation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "create-slides-batch",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-batch-trigger",
+      "name": "Batch Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "description": "Receives batch slide creation requests"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate and prepare batch input\nconst deckId = $json.deckId;\nconst slides = $json.slides || [];\nconst options = $json.options || {};\n\nif (!deckId) {\n  throw new Error('deckId is required');\n}\n\nif (!slides.length) {\n  throw new Error('slides array is required and cannot be empty');\n}\n\n// Validate each slide content\nslides.forEach((slide, index) => {\n  if (!slide.content) {\n    throw new Error(`Slide ${index + 1} missing content`);\n  }\n  if (!slide.content.title && !slide.content.body) {\n    throw new Error(`Slide ${index + 1} must have title or body`);\n  }\n});\n\n// Return array of individual slide creation requests\nreturn slides.map((slide, index) => ({\n  deckId,\n  content: slide.content,\n  options: { ...options, ...slide.options },\n  slideIndex: index + 1,\n  totalSlides: slides.length,\n  batchId: `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`\n}));"
+      },
+      "id": "prepare-batch",
+      "name": "Prepare Batch",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "description": "Splits batch request into individual slide requests"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Complete slide creation workflow for single slide\n// This is the same logic as complete-workflow.js but for batch processing\n\nconst credentials = await this.getCredentials('googleOAuth2Api');\nconst accessToken = credentials.access_token;\n\nconst deckId = $json.deckId;\nconst content = $json.content;\nconst slideIndex = $json.slideIndex;\nconst batchId = $json.batchId;\n\nif (!deckId || !content) {\n  throw new Error('deckId and content are required');\n}\n\nasync function makeRequest(url, method = 'GET', body = null) {\n  const requestOptions = {\n    method,\n    url,\n    headers: {\n      'Authorization': `Bearer ${accessToken}`,\n      'Content-Type': 'application/json'\n    },\n    json: true\n  };\n\n  if (body) {\n    requestOptions.body = body;\n  }\n\n  return await $request(requestOptions);\n}\n\nfunction generateId() {\n  return `slide_${slideIndex}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n}\n\n// Simplified layout analysis for batch processing\nclass BatchLayoutAnalyzer {\n  static extractLayouts(presentation) {\n    return (presentation.layouts || []).map(layout => ({\n      objectId: layout.objectId,\n      displayName: layout.layoutProperties?.displayName || 'Unnamed',\n      placeholders: (layout.pageElements || [])\n        .filter(el => el.shape?.placeholder)\n        .map(el => ({\n          objectId: el.objectId,\n          type: el.shape.placeholder.type\n        }))\n    }));\n  }\n}\n\n// Simplified content matching for batch processing\nclass BatchContentMatcher {\n  static findBestLayout(content, layouts) {\n    let bestLayout = layouts[0];\n    let bestScore = 0;\n    \n    layouts.forEach(layout => {\n      let score = 30;\n      const placeholders = layout.placeholders.map(p => p.type);\n      \n      if (content.title && placeholders.includes('TITLE')) score += 25;\n      if (content.body && placeholders.includes('BODY')) score += 20;\n      if (content.imageUrl && placeholders.includes('PICTURE')) score += 15;\n      \n      if (score > bestScore) {\n        bestScore = score;\n        bestLayout = layout;\n      }\n    });\n    \n    return { ...bestLayout, score: bestScore };\n  }\n}\n\ntry {\n  // Get presentation (cached for batch operations)\n  const presentation = await makeRequest(\n    `https://slides.googleapis.com/v1/presentations/${deckId}`\n  );\n  \n  const layouts = BatchLayoutAnalyzer.extractLayouts(presentation);\n  const selectedLayout = BatchContentMatcher.findBestLayout(content, layouts);\n  \n  // Create slide\n  const slideId = generateId();\n  const requests = [{\n    createSlide: {\n      objectId: slideId,\n      slideLayoutReference: {\n        layoutId: selectedLayout.objectId\n      }\n    }\n  }];\n  \n  // Add content\n  selectedLayout.placeholders.forEach(placeholder => {\n    const type = placeholder.type;\n    if (type === 'TITLE' && content.title) {\n      requests.push({\n        insertText: {\n          objectId: placeholder.objectId,\n          text: content.title,\n          insertionIndex: 0\n        }\n      });\n    }\n    if (type === 'BODY' && content.body) {\n      let bodyText = content.body;\n      if (content.bullets) {\n        bodyText = content.bullets.map(b => `• ${b}`).join('\\n');\n      }\n      requests.push({\n        insertText: {\n          objectId: placeholder.objectId,\n          text: bodyText,\n          insertionIndex: 0\n        }\n      });\n    }\n    if (type === 'PICTURE' && content.imageUrl) {\n      requests.push({\n        replaceImage: {\n          imageObjectId: placeholder.objectId,\n          url: content.imageUrl\n        }\n      });\n    }\n  });\n  \n  // Execute batch update\n  const batchResponse = await makeRequest(\n    `https://slides.googleapis.com/v1/presentations/${deckId}:batchUpdate`,\n    'POST',\n    { requests }\n  );\n  \n  return {\n    success: true,\n    slideIndex,\n    slideId,\n    slideUrl: `https://docs.google.com/presentation/d/${deckId}/edit#slide=id.${slideId}`,\n    layoutUsed: selectedLayout.displayName,\n    elementsCreated: requests.length - 1,\n    batchId,\n    timestamp: new Date().toISOString()\n  };\n  \n} catch (error) {\n  return {\n    success: false,\n    slideIndex,\n    error: error.message,\n    batchId,\n    timestamp: new Date().toISOString()\n  };\n}"
+      },
+      "id": "create-individual-slide",
+      "name": "Create Individual Slide",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "description": "Creates individual slide from batch item"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Aggregate batch results\nconst items = $input.all();\nconst batchId = items[0]?.json?.batchId;\n\nconst results = {\n  batchId,\n  totalSlides: items.length,\n  successCount: 0,\n  failureCount: 0,\n  slides: [],\n  errors: [],\n  timestamp: new Date().toISOString()\n};\n\nitems.forEach(item => {\n  const data = item.json;\n  \n  if (data.success) {\n    results.successCount++;\n    results.slides.push({\n      slideIndex: data.slideIndex,\n      slideId: data.slideId,\n      slideUrl: data.slideUrl,\n      layoutUsed: data.layoutUsed,\n      elementsCreated: data.elementsCreated\n    });\n  } else {\n    results.failureCount++;\n    results.errors.push({\n      slideIndex: data.slideIndex,\n      error: data.error\n    });\n  }\n});\n\nresults.success = results.failureCount === 0;\nresults.partialSuccess = results.successCount > 0 && results.failureCount > 0;\n\nreturn {\n  statusCode: results.success ? 200 : results.partialSuccess ? 207 : 400,\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: results\n};"
+      },
+      "id": "aggregate-results",
+      "name": "Aggregate Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "description": "Combines all batch results into summary"
+    }
+  ],
+  "connections": {
+    "Batch Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batch": {
+      "main": [
+        [
+          {
+            "node": "Create Individual Slide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Individual Slide": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "timezone": "Europe/Paris",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "tags": ["google-slides", "batch-processing", "automation"]
+}
