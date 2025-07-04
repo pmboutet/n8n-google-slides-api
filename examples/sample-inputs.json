@@ -1,0 +1,98 @@
+{
+  "basicSlideCreation": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Our 2025 Strategy",
+      "body": "We will focus on community impact, sustainability, and operational excellence to drive meaningful change."
+    }
+  },
+  "slideWithImage": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Market Analysis",
+      "body": "Current market trends show significant growth opportunities in emerging technologies.",
+      "imageUrl": "https://example.com/market-chart.jpg"
+    }
+  },
+  "slideWithBullets": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Key Objectives",
+      "bullets": [
+        "Increase customer satisfaction by 25%",
+        "Expand into three new markets",
+        "Reduce operational costs by 15%",
+        "Launch innovative product line"
+      ]
+    }
+  },
+  "sectionHeader": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Section 3: Implementation",
+      "subtitle": "Putting our strategy into action"
+    }
+  },
+  "quote": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Customer Feedback",
+      "body": "\"This solution has transformed our workflow and saved us countless hours.\" - Sarah Johnson, Operations Manager"
+    }
+  },
+  "comparison": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Before vs After Implementation",
+      "columns": [
+        "Manual processes\nHigh error rates\nSlow turnaround",
+        "Automated workflows\nMinimal errors\nFast delivery"
+      ]
+    }
+  },
+  "advancedFormatting": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "content": {
+      "title": "Financial Results Q4 2024",
+      "body": "Revenue increased by 23% compared to previous quarter, exceeding all projections.",
+      "formatting": {
+        "title": {
+          "fontSize": 36,
+          "color": "#1a73e8",
+          "bold": true
+        },
+        "body": {
+          "fontSize": 18,
+          "color": "#333333"
+        }
+      }
+    }
+  },
+  "batchProcessing": {
+    "deckId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "slides": [
+      {
+        "content": {
+          "title": "Introduction",
+          "body": "Welcome to our quarterly business review."
+        }
+      },
+      {
+        "content": {
+          "title": "Key Metrics",
+          "bullets": [
+            "Revenue: +23%",
+            "Customer Growth: +15%",
+            "Market Share: +5%"
+          ]
+        }
+      },
+      {
+        "content": {
+          "title": "Next Steps",
+          "body": "Focus on scaling successful initiatives and addressing identified challenges."
+        }
+      }
+    ]
+  }
+}

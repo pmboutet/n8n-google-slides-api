@@ -1,0 +1,174 @@
+{
+  "successfulSlideCreation": {
+    "success": true,
+    "slideId": "g2a3b4c5d6e7f8g9h0",
+    "slideUrl": "https://docs.google.com/presentation/d/1a2B3cDEfgHIjkLmnopQRsTuVWxyz/edit#slide=id.g2a3b4c5d6e7f8g9h0",
+    "presentationId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "layoutUsed": "TITLE_AND_BODY",
+    "contentAnalysis": {
+      "hasTitle": true,
+      "hasBody": true,
+      "hasImage": false,
+      "hasBullets": false,
+      "contentLength": "medium",
+      "contentType": "general"
+    },
+    "reasoning": "Has title content | Has body content | Content type: general | Layout: Title and Body | Score: 75",
+    "confidence": "high",
+    "timestamp": "2025-07-04T10:15:30.123Z"
+  },
+  "layoutExtraction": {
+    "success": true,
+    "presentationId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "presentationTitle": "Company Strategy Presentation",
+    "layouts": [
+      {
+        "objectId": "p_layout_title_only",
+        "displayName": "Title Only",
+        "placeholders": [
+          {
+            "objectId": "p_title_1",
+            "type": "TITLE",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "objectId": "p_layout_title_body",
+        "displayName": "Title and Body",
+        "placeholders": [
+          {
+            "objectId": "p_title_2",
+            "type": "TITLE",
+            "index": 0
+          },
+          {
+            "objectId": "p_body_1",
+            "type": "BODY",
+            "index": 1
+          }
+        ]
+      }
+    ],
+    "categorizedLayouts": {
+      "titleOnly": [
+        {
+          "objectId": "p_layout_title_only",
+          "displayName": "Title Only"
+        }
+      ],
+      "titleAndBody": [
+        {
+          "objectId": "p_layout_title_body",
+          "displayName": "Title and Body"
+        }
+      ],
+      "titleAndTwoColumns": [],
+      "sectionHeader": [],
+      "blank": [],
+      "other": []
+    },
+    "stats": {
+      "totalLayouts": 2,
+      "categoryCounts": {
+        "titleOnly": 1,
+        "titleAndBody": 1,
+        "titleAndTwoColumns": 0,
+        "sectionHeader": 0,
+        "blank": 0,
+        "other": 0
+      }
+    },
+    "timestamp": "2025-07-04T10:15:25.123Z"
+  },
+  "layoutMatching": {
+    "success": true,
+    "selectedLayout": {
+      "objectId": "p_layout_title_body",
+      "displayName": "Title and Body",
+      "placeholders": [
+        {
+          "objectId": "p_title_2",
+          "type": "TITLE",
+          "index": 0
+        },
+        {
+          "objectId": "p_body_1",
+          "type": "BODY",
+          "index": 1
+        }
+      ],
+      "score": 75
+    },
+    "alternatives": [
+      {
+        "objectId": "p_layout_title_only",
+        "displayName": "Title Only",
+        "score": 45
+      }
+    ],
+    "contentAnalysis": {
+      "hasTitle": true,
+      "hasBody": true,
+      "hasImage": false,
+      "hasBullets": false,
+      "contentLength": "medium",
+      "contentType": "general"
+    },
+    "reasoning": "Layout has title placeholder for provided title; Layout has body placeholder for provided content; Score: 75/100",
+    "confidence": "high",
+    "timestamp": "2025-07-04T10:15:28.123Z"
+  },
+  "errorResponse": {
+    "success": false,
+    "error": "Invalid presentation ID or insufficient permissions",
+    "presentationId": "invalid_id",
+    "timestamp": "2025-07-04T10:15:30.123Z"
+  },
+  "workflowStatus": {
+    "success": true,
+    "workflow": {
+      "step": 4,
+      "status": "completed",
+      "results": {
+        "layoutsFound": 8,
+        "presentationTitle": "Company Strategy Presentation",
+        "contentAnalysis": {
+          "hasTitle": true,
+          "hasBody": true,
+          "hasImage": false,
+          "hasBullets": false,
+          "contentLength": "short",
+          "contentType": "general"
+        },
+        "selectedLayout": {
+          "objectId": "p_layout_title_body",
+          "displayName": "Title and Body",
+          "score": 75
+        },
+        "reasoning": "Has title content | Has body content | Content type: general | Layout: Title and Body | Score: 75",
+        "slideCreated": {
+          "slideId": "g2a3b4c5d6e7f8g9h0",
+          "slideUrl": "https://docs.google.com/presentation/d/1a2B3cDEfgHIjkLmnopQRsTuVWxyz/edit#slide=id.g2a3b4c5d6e7f8g9h0",
+          "elementsCreated": 2,
+          "batchUpdateSuccess": true
+        }
+      }
+    },
+    "slideId": "g2a3b4c5d6e7f8g9h0",
+    "slideUrl": "https://docs.google.com/presentation/d/1a2B3cDEfgHIjkLmnopQRsTuVWxyz/edit#slide=id.g2a3b4c5d6e7f8g9h0",
+    "presentationId": "1a2B3cDEfgHIjkLmnopQRsTuVWxyz",
+    "layoutUsed": "Title and Body",
+    "contentAnalysis": {
+      "hasTitle": true,
+      "hasBody": true,
+      "hasImage": false,
+      "hasBullets": false,
+      "contentLength": "short",
+      "contentType": "general"
+    },
+    "reasoning": "Has title content | Has body content | Content type: general | Layout: Title and Body | Score: 75",
+    "confidence": "high",
+    "timestamp": "2025-07-04T10:15:30.123Z"
+  }
+}
