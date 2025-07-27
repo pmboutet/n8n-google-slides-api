@@ -1,4 +1,4 @@
-# 🔧 n8n Google Slides API Automation
+# 🔧  Google Slides API Automation [NOT FOR PRODUCTION USE]
 
 A comprehensive system for dynamically generating Google Slides presentations through n8n workflows, featuring intelligent layout detection and content placement.
 
